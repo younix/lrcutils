@@ -75,8 +75,10 @@ main(int argc, char **argv)
 			csec = 0;
 
 		/* calculate waiting time */
-		wtime = MIN2USEC(min) + SEC2USEC(sec) + CSEC2USEC(csec)
-			- time_sum;
+		wtime = MIN2USEC(min) + SEC2USEC(sec) + CSEC2USEC(csec);
+		if (wtime < time_sum)	/* check for timing tags in the past */
+			continue;
+		wtime -= time_sum;
 
 		usleep(wtime);		/* wait ... */
 		time_sum += wtime;	/* how longe we've been waiting */
