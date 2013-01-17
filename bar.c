@@ -87,7 +87,6 @@ read_cb(GIOChannel *ch, GIOCondition condition, gpointer data)
 			}
 			break;
 		case G_IO_STATUS_NORMAL:
-		default:
 			if (len <= 0)
 				break;
 			content = g_string_append_len(content, buf, len);
