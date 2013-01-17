@@ -9,7 +9,7 @@ all: lrcplay lrcrec
 	gcc ${CFLAGS} -o $@ $<
 
 bar: bar.c
-	gcc ${CFLAGS} `pkg-config --libs --cflags gtk+-2.0` -o $@ $<
+	gcc ${CFLAGS} `pkg-config --libs --cflags gtk+-2.0 gio-2.0` -o $@ $<
 
 clean:
 	rm -f lrcplay lrcrec

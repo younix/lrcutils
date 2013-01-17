@@ -1,8 +1,11 @@
 #include <gtk/gtk.h>
+#include <glib.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
+
+#include <unistd.h>
 
 static gint monitor_id = 0;
 static gboolean overlap = FALSE;
@@ -49,14 +52,69 @@ claim_area(GtkWidget *widget, GdkRectangle *monitor)
 			PropModeReplace, (unsigned char *) value, 12);
 }
 
+static inline void
+set_label(GtkWidget *label, gchar *str)
+{
+	gchar *fstr;
+	
+	fstr = g_strdup_printf("<span font_desc=\"20\">%s</span>", str);
+	gtk_label_set_markup(GTK_LABEL(label), fstr);
+	g_free(fstr);
+}
+
+static gboolean
+read_cb(GIOChannel *source, GIOCondition condition, gpointer data)
+{
+	GtkWidget *text = data;
+	gchar *str;
+	gsize length;
+	GError *error = NULL;
+
+	switch (condition) {
+	case G_IO_IN:
+		switch (g_io_channel_read_line(source, &str, &length,
+					       NULL, &error)) {
+		case G_IO_STATUS_EOF:
+			gtk_main_quit();
+			break;
+		case G_IO_STATUS_AGAIN:
+			return read_cb(source, condition, data);
+			break;
+		case G_IO_STATUS_ERROR:
+			if (error) {
+				g_printerr("Error: %s", error->message);
+				gtk_main_quit();
+			}
+			break;
+		case G_IO_STATUS_NORMAL:
+		default:
+			if (length > 0) {
+				set_label(text, str);
+				g_free(str);
+			}
+			break;
+		}
+		break;
+	case G_IO_HUP:
+		gtk_main_quit();
+		break;
+	default:
+		break;
+	}
+
+	return TRUE;
+}
+
 int
 main( int argc, char *argv[])
 {
 	GError *error = NULL;
 	GtkWidget *widget;
 	GtkWindow *window;
+	GtkAllocation allocation;
+	GtkWidget *text;
 	GdkRectangle monitor;
-	const gint height = 25;
+	GIOChannel *input_channel;
 
 	if (!gtk_init_with_args(&argc, &argv, "", entries, NULL, &error)) {
 		if (error)
@@ -70,7 +128,9 @@ main( int argc, char *argv[])
 	gdk_screen_get_monitor_geometry(gtk_widget_get_screen(widget),
 					monitor_id, &monitor);
 
-	gtk_window_set_default_size(window, monitor.width, height);
+	gtk_window_set_default_size(window, monitor.width, -1);
+	/* Dont know height yet, move to invisible area for now */
+	gtk_window_move(window, monitor.x, monitor.height);
 
 	gtk_window_set_type_hint(window, GDK_WINDOW_TYPE_HINT_SPLASHSCREEN);
 	gtk_window_set_decorated(window, FALSE);
@@ -81,14 +141,26 @@ main( int argc, char *argv[])
 	gtk_window_set_keep_below(window, FALSE);
 	gtk_window_set_deletable(window, FALSE);
 
-	gtk_window_move(window, monitor.x, monitor.height - height);
+	text = gtk_label_new(NULL);
+	gtk_container_add(GTK_CONTAINER(widget), text);
+	gtk_widget_show(text);
+	set_label(text, " ");
 
 	gtk_widget_show(widget);
+
+	gtk_widget_get_allocation(widget, &allocation);
+	gtk_window_move(window, monitor.x, monitor.height - allocation.height);
 
 	if (!overlap)
 		claim_area(widget, &monitor);
 
+	input_channel = g_io_channel_unix_new(STDIN_FILENO);
+	g_io_add_watch(input_channel, G_IO_IN | G_IO_HUP,
+		       read_cb, text);
+
 	gtk_main();
+
+	g_io_channel_unref(input_channel);
 
 	return 0;
 }
