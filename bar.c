@@ -63,35 +63,39 @@ set_label(GtkWidget *label, gchar *str)
 }
 
 static gboolean
-read_cb(GIOChannel *source, GIOCondition condition, gpointer data)
+read_cb(GIOChannel *ch, GIOCondition condition, gpointer data)
 {
 	GtkWidget *text = data;
-	gchar *str;
-	gsize length;
-	GError *error = NULL;
+	gchar buf[BUFSIZ], *nl;
+	gsize len = 0;
+	GError *err = NULL;
+	GString *content = g_object_get_data(G_OBJECT(text), "string");
 
 	switch (condition) {
 	case G_IO_IN:
-		switch (g_io_channel_read_line(source, &str, &length,
-					       NULL, &error)) {
+		switch (g_io_channel_read_chars(ch, buf, BUFSIZ, &len, &err)) {
 		case G_IO_STATUS_EOF:
 			gtk_main_quit();
 			break;
 		case G_IO_STATUS_AGAIN:
-			return read_cb(source, condition, data);
+			return read_cb(ch, condition, data);
 			break;
 		case G_IO_STATUS_ERROR:
-			if (error) {
-				g_printerr("Error: %s", error->message);
+			if (err) {
+				g_printerr("Error: %s", err->message);
 				gtk_main_quit();
 			}
 			break;
 		case G_IO_STATUS_NORMAL:
 		default:
-			if (length > 0) {
-				set_label(text, str);
-				g_free(str);
-			}
+			if (len <= 0)
+				break;
+			content = g_string_append_len(content, buf, len);
+			if ((nl = g_strrstr(content->str, "\n")) != NULL)
+				*nl = '\0';
+			set_label(text, content->str);
+			if (nl != NULL) /* Reset string if found a newline */
+				content = g_string_truncate(content, 0);
 			break;
 		}
 		break;
@@ -151,6 +155,7 @@ main( int argc, char *argv[])
 	gtk_container_add(GTK_CONTAINER(widget), text);
 	gtk_widget_show(text);
 	set_label(text, " ");
+	g_object_set_data(G_OBJECT(text), "string", g_string_new(""));
 
 	gtk_widget_show(widget);
 
@@ -161,12 +166,13 @@ main( int argc, char *argv[])
 		claim_area(widget, &monitor);
 
 	input_channel = g_io_channel_unix_new(STDIN_FILENO);
-	g_io_add_watch(input_channel, G_IO_IN | G_IO_HUP,
-		       read_cb, text);
+	g_io_channel_set_flags(input_channel, G_IO_FLAG_NONBLOCK, &error);
+	g_io_add_watch(input_channel, G_IO_IN | G_IO_HUP, read_cb, text);
 
 	gtk_main();
 
 	g_io_channel_unref(input_channel);
+	g_string_free(g_object_get_data(G_OBJECT(text), "string"), TRUE);
 
 	return 0;
 }
