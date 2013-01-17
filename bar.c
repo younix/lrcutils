@@ -43,8 +43,8 @@ claim_area(GtkWidget *widget, GdkRectangle *monitor)
 	 */
 	value[3] = allocation.height;
 
-	value[10] = allocation.x;
-	value[11] = allocation.x + allocation.width;
+	value[10] = monitor->x;
+	value[11] = monitor->x + allocation.width;
 
 	XChangeProperty(display, handle, strut, XA_CARDINAL, 32,
 			PropModeReplace, (unsigned char *) value, 4);
