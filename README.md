@@ -12,3 +12,7 @@ It opens a file and prints a line at the right time to STDOUT.
 lrcrec records timing tags in real time.
 It opens a file and wait for a return for every line.
 After a return it prints a lyric line to STDOUT with a timing tag.
+
+## bar
+bar incrementally displays the last line from STDIN.
+It may be used as a frontent for lrcplay.
