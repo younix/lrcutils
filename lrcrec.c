@@ -75,6 +75,7 @@ main(int argc, char **argv)
 		csec = USEC2CSEC(cur_time.tv_usec);
 
 		printf("[%d:%02d.%02d]%s", min, sec, csec, lyric);
+		fflush(stdout);
 	}
 
 	fclose(fh);

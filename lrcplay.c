@@ -83,6 +83,7 @@ main(int argc, char **argv)
 					/* till now?			*/
 
 		printf("%s", lyric);
+		fflush(stdout);
 	}
 
 	fclose(fh);
