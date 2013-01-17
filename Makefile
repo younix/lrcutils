@@ -9,4 +9,4 @@ all: lrcplay lrcrec
 	gcc ${CFLAGS} -o $@ $<
 
 clean:
-	rm -f lrcplay
+	rm -f lrcplay lrcrec
