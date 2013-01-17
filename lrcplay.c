@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #define CSEC2USEC(csec)	((csec) * 10000)
 #define SEC2USEC(sec)	((sec) * 1000000)
@@ -50,6 +51,11 @@ main(int argc, char **argv)
 		if (line[0] != '[')	/* check for empty lines */
 			continue;
 
+		/* search for begin of lyric */
+		if ((lyric = strchr(line, ']')) == NULL)
+			continue;
+		lyric++;
+
 		/* read minutes */
 		time_str = line + 1;
 		min = strtol(time_str, &time_str, 10);
@@ -61,15 +67,10 @@ main(int argc, char **argv)
 			sec = 0;
 
 		/* read centiseconds */
-		if (time_str != NULL && *time_str == '.') {
-			csec = strtol(time_str + 1, &lyric, 10);
-		} else {
+		if (time_str != NULL && *time_str == '.')
+			csec = strtol(time_str + 1, NULL, 10);
+		else
 			csec = 0;
-			lyric = time_str;
-		}
-
-		if (lyric[0] == ']')
-			lyric++;
 
 		/* calculate waiting time */
 		wtime = MIN2USEC(min) + SEC2USEC(sec) + CSEC2USEC(csec)
