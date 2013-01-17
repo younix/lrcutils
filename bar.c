@@ -111,6 +111,7 @@ main( int argc, char *argv[])
 	GError *error = NULL;
 	GtkWidget *widget;
 	GtkWindow *window;
+	GdkScreen *screen;
 	GtkAllocation allocation;
 	GtkWidget *text;
 	GdkRectangle monitor;
@@ -125,8 +126,13 @@ main( int argc, char *argv[])
 	widget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	window = GTK_WINDOW(widget);
 
-	gdk_screen_get_monitor_geometry(gtk_widget_get_screen(widget),
-					monitor_id, &monitor);
+	screen = gtk_widget_get_screen(widget);
+	if (monitor_id >= gdk_screen_get_n_monitors(screen)) {
+		g_printerr("Error: Invalid monitor id\n");
+		return 1;
+	}
+
+	gdk_screen_get_monitor_geometry(screen, monitor_id, &monitor);
 
 	gtk_window_set_default_size(window, monitor.width, -1);
 	/* Dont know height yet, move to invisible area for now */
