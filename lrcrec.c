@@ -14,17 +14,39 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define _XOPEN_SOURCE 500
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
+#include <unistd.h>
+
+#include "lrc.h"
 
 #define USEC2CSEC(usec)	((usec) / 10000)
 
 void
+print_lrc_info(struct lrc_info *lrc_info)
+{
+	if (lrc_info->artist  != NULL) printf("[ar:%s]\n", lrc_info->artist);
+	if (lrc_info->album   != NULL) printf("[al:%s]\n", lrc_info->album);
+	if (lrc_info->title   != NULL) printf("[ti:%s]\n", lrc_info->title);
+	if (lrc_info->author  != NULL) printf("[au:%s]\n", lrc_info->author);
+	if (lrc_info->creator != NULL) printf("[by:%s]\n", lrc_info->creator);
+}
+
+void
 usage(void)
 {
-	fprintf(stderr, "lrcrec FILE\n");
+	fprintf(stderr, "lrcrec [OPTIONS] FILE\n"
+			"\n"
+			"OPTIONS\n"
+			"\t-r artist\n"
+			"\t-l album\n"
+			"\t-t title\n"
+			"\t-u author\n"
+			"\t-b creator\n");
 	exit(EXIT_FAILURE);
 }
 
@@ -36,14 +58,43 @@ main(int argc, char **argv)
 	int min, sec, csec;
 	struct timeval start_time;
 	struct timeval cur_time;
+	struct lrc_info lrc_info = {0};
+	int ch;
 
-	if (argc < 2)
+	while ((ch = getopt(argc, argv, "r:l:t:u:b:")) != -1) {
+		switch (ch) {
+		case 'r':
+			lrc_info.artist = strdup(optarg);
+			break;
+		case 'l':
+			lrc_info.album = strdup(optarg);
+			break;
+		case 't':
+			lrc_info.title = strdup(optarg);
+			break;
+		case 'u':
+			lrc_info.author = strdup(optarg);
+			break;
+		case 'b':
+			lrc_info.creator = strdup(optarg);
+			break;
+		default:
+			usage();
+			/* NOTREACHED */
+		}
+	}
+	argc -= optind;
+	argv += optind;
+
+	if (argc < 1)
 		usage();
-	
-	FILE *fh = fopen(argv[1], "r");
+
+	FILE *fh = fopen(argv[0], "r");
 
 	if (fh == NULL)
 		return EXIT_FAILURE;
+
+	print_lrc_info(&lrc_info);
 
 	gettimeofday(&start_time, NULL);
 
