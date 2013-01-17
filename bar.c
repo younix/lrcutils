@@ -138,7 +138,7 @@ main( int argc, char *argv[])
 	/* Dont know height yet, move to invisible area for now */
 	gtk_window_move(window, monitor.x, monitor.height);
 
-	gtk_window_set_type_hint(window, GDK_WINDOW_TYPE_HINT_SPLASHSCREEN);
+	gtk_window_set_type_hint(window, GDK_WINDOW_TYPE_HINT_DOCK);
 	gtk_window_set_decorated(window, FALSE);
 	gtk_window_set_skip_taskbar_hint(window, TRUE);
 	gtk_window_set_skip_pager_hint(window, TRUE);
