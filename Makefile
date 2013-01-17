@@ -4,8 +4,11 @@ CFLAGS=-std=c99 -pedantic -Wall
 
 all: lrcplay lrcrec
 
+lrcplay: lrcplay.c lrc.h
+lrcrec: lrcrec.c lrc.h
+
 .SUFFIXES: .c
-.c: lrc.h
+.c:
 	gcc ${CFLAGS} -o $@ $<
 
 clean:
