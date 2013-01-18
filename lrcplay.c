@@ -56,10 +56,9 @@ waiting(useconds_t wtime, useconds_t time_sum)
 		return time_sum;
 
 	wtime -= time_sum;
-
 	usleep(wtime);		/* wait ... */
-	time_sum += wtime;	/* how longe we've been waiting */
-				/* till now?			*/
+	time_sum += wtime;	/* how longe we've been waiting till now? */
+
 	return time_sum;
 }
 
