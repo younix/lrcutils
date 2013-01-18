@@ -110,7 +110,7 @@ main(int argc, char **argv)
 			lyric++;
 		}
 
-		puts(lyric);
+		printf("%s", lyric);
 		fflush(stdout);
 	}
 
