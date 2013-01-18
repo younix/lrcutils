@@ -49,6 +49,20 @@ str2time(char *time_str)
 	return MIN2USEC(min) + SEC2USEC(sec) + CSEC2USEC(csec);
 }
 
+useconds_t
+waiting(useconds_t wtime, useconds_t time_sum)
+{
+	if (wtime < time_sum)	/* check for timing tags in the past */
+		return time_sum;
+
+	wtime -= time_sum;
+
+	usleep(wtime);		/* wait ... */
+	time_sum += wtime;	/* how longe we've been waiting */
+				/* till now?			*/
+	return time_sum;
+}
+
 void
 usage(void)
 {
@@ -82,14 +96,7 @@ main(int argc, char **argv)
 		lyric++;
 
 		wtime = str2time(line);
-
-		if (wtime < time_sum)	/* check for timing tags in the past */
-			continue;
-		wtime -= time_sum;
-
-		usleep(wtime);		/* wait ... */
-		time_sum += wtime;	/* how longe we've been waiting */
-					/* till now?			*/
+		time_sum = waiting(wtime, time_sum);
 
 		printf("%s", lyric);
 		fflush(stdout);
