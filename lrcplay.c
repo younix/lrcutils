@@ -20,10 +20,34 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <ctype.h>
 
 #define CSEC2USEC(csec)	((csec) * 10000)
 #define SEC2USEC(sec)	((sec) * 1000000)
 #define MIN2USEC(min)	(SEC2USEC((min) * 60))
+
+useconds_t
+str2time(char *time_str)
+{
+	int min = 0, sec = 0, csec = 0;
+
+	if (!isdigit(time_str[0]))
+		time_str++;
+
+	/* read minutes */
+	min = strtol(time_str, &time_str, 10);
+
+	/* read seconds */
+	if (time_str != NULL && *time_str == ':')
+		sec = strtol(time_str + 1, &time_str, 10);
+
+	/* read centiseconds */
+	if (time_str != NULL && *time_str == '.')
+		csec = strtol(time_str + 1, NULL, 10);
+
+	/* calculate waiting time */
+	return MIN2USEC(min) + SEC2USEC(sec) + CSEC2USEC(csec);
+}
 
 void
 usage(void)
@@ -44,8 +68,7 @@ main(int argc, char **argv)
 		return EXIT_FAILURE;
 
 	char line[BUFSIZ];
-	char *time_str, *lyric;
-	int min, sec, csec;
+	char *lyric;
 	useconds_t wtime = 0;		/* waiting time */
 	useconds_t time_sum = 0;
 
@@ -58,24 +81,8 @@ main(int argc, char **argv)
 			continue;
 		lyric++;
 
-		/* read minutes */
-		time_str = line + 1;
-		min = strtol(time_str, &time_str, 10);
+		wtime = str2time(line);
 
-		/* read seconds */
-		if (time_str != NULL && *time_str == ':')
-			sec = strtol(time_str + 1, &time_str, 10);
-		else
-			sec = 0;
-
-		/* read centiseconds */
-		if (time_str != NULL && *time_str == '.')
-			csec = strtol(time_str + 1, NULL, 10);
-		else
-			csec = 0;
-
-		/* calculate waiting time */
-		wtime = MIN2USEC(min) + SEC2USEC(sec) + CSEC2USEC(csec);
 		if (wtime < time_sum)	/* check for timing tags in the past */
 			continue;
 		wtime -= time_sum;
