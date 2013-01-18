@@ -57,7 +57,7 @@ set_label(GtkWidget *label, gchar *str)
 {
 	gchar *fstr;
 	
-	fstr = g_strdup_printf("<span font_desc=\"20\">%s</span>", str);
+	fstr = g_strdup_printf("<span font_desc=\"20\">%1s</span>", str);
 	gtk_label_set_markup(GTK_LABEL(label), fstr);
 	g_free(fstr);
 }
@@ -116,6 +116,7 @@ main( int argc, char *argv[])
 	GtkWindow *window;
 	GdkScreen *screen;
 	GtkAllocation allocation;
+	GdkGeometry geometry;
 	GtkWidget *text;
 	GdkRectangle monitor;
 	GIOChannel *input_channel;
@@ -137,7 +138,10 @@ main( int argc, char *argv[])
 
 	gdk_screen_get_monitor_geometry(screen, monitor_id, &monitor);
 
-	gtk_window_set_default_size(window, monitor.width, -1);
+	geometry.min_width = geometry.max_width = monitor.width;
+	geometry.min_height = geometry.max_height = -1;
+	gtk_window_set_geometry_hints(window, NULL, &geometry,
+				      GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE);
 	/* Dont know height yet, move to invisible area for now */
 	gtk_window_move(window, monitor.x, monitor.height);
 
@@ -153,7 +157,7 @@ main( int argc, char *argv[])
 	text = gtk_label_new(NULL);
 	gtk_container_add(GTK_CONTAINER(widget), text);
 	gtk_widget_show(text);
-	set_label(text, " ");
+	set_label(text, "");
 	g_object_set_data(G_OBJECT(text), "string", g_string_new(""));
 
 	gtk_widget_show(widget);
