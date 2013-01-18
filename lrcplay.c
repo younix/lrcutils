@@ -81,8 +81,8 @@ main(int argc, char **argv)
 		return EXIT_FAILURE;
 
 	char line[BUFSIZ];
-	char *lyric;
-	useconds_t wtime = 0;		/* waiting time */
+	char *lyric, *ttag;		/* timing tag	*/
+	useconds_t wtime = 0;		/* waiting time	*/
 	useconds_t time_sum = 0;
 
 	while (fgets(line, BUFSIZ, fh)) {
@@ -96,6 +96,19 @@ main(int argc, char **argv)
 
 		wtime = str2time(line);
 		time_sum = waiting(wtime, time_sum);
+
+		while ((ttag = strchr(lyric, '<')) != NULL) {
+			fwrite(lyric, sizeof *lyric, ttag - lyric, stdout);
+			fflush(stdout);
+
+			wtime = str2time(ttag);
+			time_sum = waiting(wtime, time_sum);
+
+			/* search for begin of lyric */
+			if ((lyric = strchr(ttag, '>')) == NULL)
+				continue;
+			lyric++;
+		}
 
 		printf("%s", lyric);
 		fflush(stdout);
