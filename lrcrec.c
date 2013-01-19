@@ -36,9 +36,9 @@ usage(void)
 			"\t-l album\n"
 			"\t-t title\n"
 			"\t-u author\n"
-			"\t-b creator\n"
-			"\t-L length\n"
-			"\t-O offset\n");
+			"\t-b creator\tof the lrc file\n"
+			"\t-L length\tof the song\n"
+			"\t-O offset\tin milliseconds\n");
 	exit(EXIT_FAILURE);
 }
 
