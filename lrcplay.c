@@ -81,7 +81,6 @@ main(int argc, char **argv)
 			*tag_end = '\0';
 
 			set_lrc_info(&lrc_info, tag, tag_value);
-			printf("%s: %s\n", tag, tag_value);
 		}
 	}
 
