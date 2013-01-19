@@ -54,19 +54,19 @@ main(int argc, char **argv)
 	while ((ch = getopt(argc, argv, "r:l:t:u:b:")) != -1) {
 		switch (ch) {
 		case 'r':
-			lrc_info.artist = strdup(optarg);
+			set_lrc_info(&lrc_info, "ar", optarg);
 			break;
 		case 'l':
-			lrc_info.album = strdup(optarg);
+			set_lrc_info(&lrc_info, "al", optarg);
 			break;
 		case 't':
-			lrc_info.title = strdup(optarg);
+			set_lrc_info(&lrc_info, "ti", optarg);
 			break;
 		case 'u':
-			lrc_info.author = strdup(optarg);
+			set_lrc_info(&lrc_info, "au", optarg);
 			break;
 		case 'b':
-			lrc_info.creator = strdup(optarg);
+			set_lrc_info(&lrc_info, "by", optarg);
 			break;
 		default:
 			usage();

@@ -51,25 +51,25 @@ set_lrc_info(struct lrc_info *lrc_info, char *tag, char *value)
 	if (lrc_info == NULL || tag == NULL || value == NULL)
 		return -1;
 
-	if (strcmp(tag, "ar"))
+	if (strcmp(tag, "ar") == 0)
 		lrc_info->artist = strdup(value);
 
-	if (strcmp(tag, "al"))
+	if (strcmp(tag, "al") == 0)
 		lrc_info->album = strdup(value);
 
-	if (strcmp(tag, "ti"))
+	if (strcmp(tag, "ti") == 0)
 		lrc_info->title = strdup(value);
 
-	if (strcmp(tag, "au"))
+	if (strcmp(tag, "au") == 0)
 		lrc_info->author = strdup(value);
 
-	if (strcmp(tag, "by"))
+	if (strcmp(tag, "by") == 0)
 		lrc_info->creator = strdup(value);
 
-	if (strcmp(tag, "length"))
+	if (strcmp(tag, "length") == 0)
 		lrc_info->length = str2time(value);
 
-	if (strcmp(tag, "offset"))
+	if (strcmp(tag, "offset") == 0)
 		lrc_info->offset = strtol(value, NULL, 10);
 
 	return 0;
