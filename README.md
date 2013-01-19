@@ -23,6 +23,7 @@ It may be used as a frontent for lrcplay.
 
 # TODO
 * manpages for all tools
+* manpage which descripes the lrc file format
 * recording inline timing tags
 * use offset in lrcplay
 * swap from usleep() to nanosleep()
