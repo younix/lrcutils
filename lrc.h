@@ -20,6 +20,7 @@
 #define CSEC2USEC(csec) ((csec) * 10000)
 #define SEC2USEC(sec)   ((sec) * 1000000)
 #define MIN2USEC(min)   (SEC2USEC((min) * 60))
+#define USEC2SEC(usec)	((usec) / 1000000)
 
 struct lrc_info {
 	char *artist;
@@ -28,11 +29,12 @@ struct lrc_info {
 	char *author;
 	char *creator;
 
-	useconds_t lenght;	/* seconds */
+	useconds_t lenght;
 	signed int offset;	/* milliseconds */
 };
 
 useconds_t str2time(char *time_str);
 int set_lrc_info(struct lrc_info *lrc_info, char *tag, char *value);
+void print_lrc_info(struct lrc_info *lrc_info);
 
 #endif

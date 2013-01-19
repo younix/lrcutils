@@ -27,16 +27,6 @@
 #define USEC2CSEC(usec)	((usec) / 10000)
 
 void
-print_lrc_info(struct lrc_info *lrc_info)
-{
-	if (lrc_info->artist  != NULL) printf("[ar:%s]\n", lrc_info->artist);
-	if (lrc_info->album   != NULL) printf("[al:%s]\n", lrc_info->album);
-	if (lrc_info->title   != NULL) printf("[ti:%s]\n", lrc_info->title);
-	if (lrc_info->author  != NULL) printf("[au:%s]\n", lrc_info->author);
-	if (lrc_info->creator != NULL) printf("[by:%s]\n", lrc_info->creator);
-}
-
-void
 usage(void)
 {
 	fprintf(stderr, "lrcrec [OPTIONS] FILE\n"

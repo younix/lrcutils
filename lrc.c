@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <stdio.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
@@ -72,4 +73,32 @@ set_lrc_info(struct lrc_info *lrc_info, char *tag, char *value)
 		lrc_info->offset = strtol(value, NULL, 10);
 
 	return 0;
+}
+
+void
+print_lrc_info(struct lrc_info *lrc_info)
+{
+        if (lrc_info->artist  != NULL)
+		printf("[ar:%s]\n", lrc_info->artist);
+
+        if (lrc_info->album   != NULL)
+		printf("[al:%s]\n", lrc_info->album);
+
+        if (lrc_info->title   != NULL)
+		printf("[ti:%s]\n", lrc_info->title);
+
+        if (lrc_info->author  != NULL)
+		printf("[au:%s]\n", lrc_info->author);
+
+        if (lrc_info->creator != NULL)
+		printf("[by:%s]\n", lrc_info->creator);
+
+        if (lrc_info->lenght > 0) {
+		printf("[length:%d:%d]\n",
+			USEC2SEC(lrc_info->lenght) / 60,	/* minutes */
+			USEC2SEC(lrc_info->lenght) % 60);	/* seconds */
+	}
+
+        if (lrc_info->offset != 0)
+		printf("[offset:%d]\n", lrc_info->offset);
 }
