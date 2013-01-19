@@ -19,3 +19,6 @@
 lrcplay
 lrcrec
 bar
+
+# exemple files
+*.lrc
