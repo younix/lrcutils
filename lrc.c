@@ -67,7 +67,7 @@ set_lrc_info(struct lrc_info *lrc_info, char *tag, char *value)
 		lrc_info->creator = strdup(value);
 
 	if (strcmp(tag, "length"))
-		lrc_info->lenght = str2time(value);
+		lrc_info->length = str2time(value);
 
 	if (strcmp(tag, "offset"))
 		lrc_info->offset = strtol(value, NULL, 10);
@@ -93,10 +93,10 @@ print_lrc_info(struct lrc_info *lrc_info)
         if (lrc_info->creator != NULL)
 		printf("[by:%s]\n", lrc_info->creator);
 
-        if (lrc_info->lenght > 0) {
+        if (lrc_info->length > 0) {
 		printf("[length:%d:%d]\n",
-			USEC2SEC(lrc_info->lenght) / 60,	/* minutes */
-			USEC2SEC(lrc_info->lenght) % 60);	/* seconds */
+			USEC2SEC(lrc_info->length) / 60,	/* minutes */
+			USEC2SEC(lrc_info->length) % 60);	/* seconds */
 	}
 
         if (lrc_info->offset != 0)

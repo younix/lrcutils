@@ -29,7 +29,7 @@ struct lrc_info {
 	char *author;
 	char *creator;
 
-	useconds_t lenght;
+	useconds_t length;
 	signed int offset;	/* milliseconds */
 };
 
