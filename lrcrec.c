@@ -21,6 +21,7 @@
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <ctype.h>
 
 #include "lrc.h"
 
@@ -97,7 +98,12 @@ main(int argc, char **argv)
 	gettimeofday(&start_time, NULL);
 
 	while (fgets(line, BUFSIZ, fh)) {
-		if (line[0] == '[') {	/* check for timing tags */
+		if (line[0] == '[') {	/* check for tags */
+			if (isalpha(line[1])) {		/* ID tag */
+				printf("%s", line);
+				continue;
+			}
+
 			/* search for begin of lyric */
 			if ((lyric = strchr(line, ']')) == NULL)
 				continue;
