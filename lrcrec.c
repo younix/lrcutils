@@ -22,6 +22,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <termios.h>
 
 #include "lrc.h"
 
@@ -53,6 +54,7 @@ main(int argc, char **argv)
 	struct timeval cur_time;
 	struct lrc_info lrc_info = {0};
 	int ch;
+	struct termios tty;
 
 	while ((ch = getopt(argc, argv, "r:l:t:u:b:L:O:")) != -1) {
 		switch (ch) {
@@ -97,6 +99,11 @@ main(int argc, char **argv)
 
 	gettimeofday(&start_time, NULL);
 
+	tcgetattr(fileno(stdin), &tty);
+	tty.c_lflag &= ~(ICANON);	/* get input without return */
+	tty.c_lflag &= ~(ECHO);		/* turn off input echo on tty */
+	tcsetattr(fileno(stdin), TCSANOW, &tty);
+
 	while (fgets(line, BUFSIZ, fh)) {
 		if (line[0] == '[') {	/* check for tags */
 			if (isalpha(line[1])) {		/* ID tag */
@@ -112,7 +119,7 @@ main(int argc, char **argv)
 			lyric = line;
 		}
 
-		getchar();		/* just wait for return */
+		getchar();		/* just wait for any key */
 
 		/* calculate time difference between start and now */
 		gettimeofday(&cur_time, NULL);
