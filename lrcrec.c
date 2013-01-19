@@ -36,7 +36,9 @@ usage(void)
 			"\t-l album\n"
 			"\t-t title\n"
 			"\t-u author\n"
-			"\t-b creator\n");
+			"\t-b creator\n"
+			"\t-L length\n"
+			"\t-O offset\n");
 	exit(EXIT_FAILURE);
 }
 
@@ -51,7 +53,7 @@ main(int argc, char **argv)
 	struct lrc_info lrc_info = {0};
 	int ch;
 
-	while ((ch = getopt(argc, argv, "r:l:t:u:b:")) != -1) {
+	while ((ch = getopt(argc, argv, "r:l:t:u:b:L:O:")) != -1) {
 		switch (ch) {
 		case 'r':
 			set_lrc_info(&lrc_info, "ar", optarg);
@@ -67,6 +69,12 @@ main(int argc, char **argv)
 			break;
 		case 'b':
 			set_lrc_info(&lrc_info, "by", optarg);
+			break;
+		case 'L':
+			set_lrc_info(&lrc_info, "length", optarg);
+			break;
+		case 'O':
+			set_lrc_info(&lrc_info, "offset", optarg);
 			break;
 		default:
 			usage();
