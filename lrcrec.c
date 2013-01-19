@@ -53,7 +53,7 @@ main(int argc, char **argv)
 	struct timeval start_time;
 	struct timeval cur_time;
 	struct lrc_info lrc_info = {0};
-	int ch;
+	int ch, key;
 	struct termios tty;
 
 	while ((ch = getopt(argc, argv, "r:l:t:u:b:L:O:")) != -1) {
@@ -118,8 +118,8 @@ main(int argc, char **argv)
 		} else {
 			lyric = line;
 		}
-
-		getchar();		/* just wait for any key */
+input:
+		key = getchar();	/* just wait for any key */
 
 		/* calculate time difference between start and now */
 		gettimeofday(&cur_time, NULL);
@@ -136,8 +136,17 @@ main(int argc, char **argv)
 		sec = cur_time.tv_sec % 60;
 		csec = USEC2CSEC(cur_time.tv_usec);
 
-		printf("[%d:%02d.%02d]%s", min, sec, csec, lyric);
-		fflush(stdout);
+		printf("[%d:%02d.%02d]", min, sec, csec);
+
+		if (key == 'e') {	/* insert empty line */
+			printf("\n");
+			fflush(stdout);
+
+			goto input;
+		} else {
+			printf("%s", lyric);
+			fflush(stdout);
+		}
 	}
 
 	fclose(fh);
