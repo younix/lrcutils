@@ -17,6 +17,10 @@
 #ifndef LRC_H
 #define LRC_H
 
+#define CSEC2USEC(csec) ((csec) * 10000)
+#define SEC2USEC(sec)   ((sec) * 1000000)
+#define MIN2USEC(min)   (SEC2USEC((min) * 60))
+
 struct lrc_info {
 	char *artist;
 	char *album;
@@ -24,8 +28,11 @@ struct lrc_info {
 	char *author;
 	char *creator;
 
-	int lenght;
-	int offset;
+	useconds_t lenght;	/* seconds */
+	signed int offset;	/* milliseconds */
 };
+
+useconds_t str2time(char *time_str);
+int set_lrc_info(struct lrc_info *lrc_info, char *tag, char *value);
 
 #endif

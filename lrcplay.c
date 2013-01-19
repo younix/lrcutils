@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define _XOPEN_SOURCE 500
+#define _XOPEN_SOURCE 700
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,32 +22,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#define CSEC2USEC(csec)	((csec) * 10000)
-#define SEC2USEC(sec)	((sec) * 1000000)
-#define MIN2USEC(min)	(SEC2USEC((min) * 60))
-
-useconds_t
-str2time(char *time_str)
-{
-	int min = 0, sec = 0, csec = 0;
-
-	if (!isdigit(time_str[0]))
-		time_str++;
-
-	/* read minutes */
-	min = strtol(time_str, &time_str, 10);
-
-	/* read seconds */
-	if (time_str != NULL && *time_str == ':')
-		sec = strtol(time_str + 1, &time_str, 10);
-
-	/* read centiseconds */
-	if (time_str != NULL && *time_str == '.')
-		csec = strtol(time_str + 1, NULL, 10);
-
-	/* calculate waiting time */
-	return MIN2USEC(min) + SEC2USEC(sec) + CSEC2USEC(csec);
-}
+#include "lrc.h"
 
 useconds_t
 waiting(useconds_t wtime, useconds_t time_sum)
@@ -72,6 +47,14 @@ usage(void)
 int
 main(int argc, char **argv)
 {
+	char line[BUFSIZ];
+	char *lyric;
+	char *ttag;			/* timing tag	*/
+	char *tag, *tag_value;
+	struct lrc_info lrc_info = {0};
+	useconds_t wtime = 0;		/* waiting time	*/
+	useconds_t time_sum = 0;
+
 	if (argc < 2)
 		usage();
 	
@@ -80,12 +63,29 @@ main(int argc, char **argv)
 	if (fh == NULL)
 		return EXIT_FAILURE;
 
-	char line[BUFSIZ];
-	char *lyric, *ttag;		/* timing tag	*/
-	useconds_t wtime = 0;		/* waiting time	*/
-	useconds_t time_sum = 0;
-
 	while (fgets(line, BUFSIZ, fh)) {
+		/* check for none conforming lines */
+		if (line[0] != '[' || strnlen(line, BUFSIZ) < 5)
+			continue;
+
+		if (isdigit(line[1]))	/* check for first lyric line */
+			break;
+
+		tag = line + 1;
+		char *tag_separator = strchr(line, ':');
+		if (tag_separator != NULL) {
+			*tag_separator = '\0';
+			tag_value = tag_separator + 1;
+
+			char *tag_end = strchr(tag_value, ']');
+			*tag_end = '\0';
+
+			set_lrc_info(&lrc_info, tag, tag_value);
+			printf("%s: %s\n", tag, tag_value);
+		}
+	}
+
+	do {
 		if (line[0] != '[')	/* check for empty lines */
 			continue;
 
@@ -112,7 +112,7 @@ main(int argc, char **argv)
 
 		printf("%s", lyric);
 		fflush(stdout);
-	}
+	} while (fgets(line, BUFSIZ, fh));
 
 	fclose(fh);
 
