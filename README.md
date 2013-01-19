@@ -28,3 +28,4 @@ It may be used as a frontent for lrcplay.
 * use offset in lrcplay
 * swap from usleep() to nanosleep()
 * integration into mpd (music player daemon)
+* add utf-8 support for lrcplay and lrcrec
