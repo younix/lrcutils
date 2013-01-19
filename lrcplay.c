@@ -116,5 +116,7 @@ main(int argc, char **argv)
 
 	fclose(fh);
 
+	waiting(lrc_info.length, time_sum);	/* wait for end of the song */
+
 	return EXIT_SUCCESS;
 }
