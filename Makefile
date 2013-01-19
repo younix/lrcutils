@@ -5,7 +5,7 @@ CFLAGS=-std=c99 -pedantic -Wall
 all: lrcplay lrcrec bar
 
 lrcplay: lrcplay.c lrc.c lrc.h
-lrcrec: lrcrec.c lrc.h
+lrcrec: lrcrec.c lrc.c lrc.h
 
 .SUFFIXES: .c
 .c:
