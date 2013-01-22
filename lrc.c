@@ -20,18 +20,24 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <errno.h>
 
 #include "lrc.h"
 
 int
 lrc_usleep(useconds_t usec)
 {
+        int ret;
         struct timespec time;
 
         time.tv_sec = usec / 1e6;
         time.tv_nsec = (usec - (time.tv_sec * 1e6)) * 1e3;
 
-        return nanosleep(&time, NULL);
+        do {
+                ret = nanosleep(&time, &time);
+        } while (ret == -1 && errno == EINTR);
+
+        return ret;
 }
 
 useconds_t
