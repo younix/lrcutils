@@ -17,6 +17,8 @@
 #ifndef LRC_H
 #define LRC_H
 
+#include <unistd.h>
+
 #define CSEC2USEC(csec) ((csec) * 10000)
 #define SEC2USEC(sec)   ((sec) * 1000000)
 #define MIN2USEC(min)   (SEC2USEC((min) * 60))
