@@ -193,6 +193,7 @@ main( int argc, char *argv[])
 
 	g_io_channel_unref(input_channel);
 	g_string_free(g_object_get_data(G_OBJECT(text), "string"), TRUE);
+	gtk_widget_destroy(widget);
 
 	return 0;
 }
