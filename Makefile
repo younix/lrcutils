@@ -1,4 +1,4 @@
-CFLAGS=-std=c99 -pedantic -Wall
+CFLAGS=-std=c99 -pedantic -Wall -D_XOPEN_SOURCE=700
 
 .PHONY: all clean
 
