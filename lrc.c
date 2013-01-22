@@ -19,8 +19,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 
 #include "lrc.h"
+
+int
+lrc_usleep(useconds_t usec)
+{
+        struct timespec time;
+
+        time.tv_sec = usec / 1e6;
+        time.tv_nsec = (usec - (time.tv_sec * 1e6)) * 1e3;
+
+        return nanosleep(&time, NULL);
+}
 
 useconds_t
 str2time(char *time_str)

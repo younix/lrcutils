@@ -26,6 +26,5 @@ It may be used as a frontent for lrcplay.
 * manpage which descripes the lrc file format
 * recording inline timing tags
 * use offset in lrcplay
-* swap from usleep() to nanosleep()
 * integration into mpd (music player daemon)
 * add utf-8 support for lrcplay and lrcrec
