@@ -31,12 +31,11 @@ It may be used as a frontent for lrcplay.
 
 # FAQ
 
-## Where can i get lrc files for my favorit songs?
+## Where can I get lrc files for my favorite songs?
 
 * http://www.lyrdb.com/karaoke/index.htm
 * http://www.lyricsfly.com/
 
-## Is it posible while recording to write output into a file and at STDOUT at
-## the same time?
+## Is it posible while recording to write output into file and at STDOUT at the same time?
 
 lrcrec input.lrc | tee output.lrc
