@@ -28,3 +28,15 @@ It may be used as a frontent for lrcplay.
 * use offset in lrcplay
 * integration into mpd (music player daemon)
 * add utf-8 support for lrcplay and lrcrec
+
+# FAQ
+
+## Where can i get lrc files for my favorit songs?
+
+* http://www.lyrdb.com/karaoke/index.htm
+* http://www.lyricsfly.com/
+
+## Is it posible while recording to write output into a file and at STDOUT at
+## the same time?
+
+lrcrec input.lrc | tee output.lrc
