@@ -35,6 +35,8 @@ struct lrc_info {
 	signed int offset;	/* milliseconds */
 };
 
+#define LRC_INFO_NULL {NULL, NULL, NULL, NULL, NULL, 0, 0};
+
 int lrc_usleep(useconds_t usec);
 useconds_t str2time(char *time_str);
 int set_lrc_info(struct lrc_info *lrc_info, char *tag, char *value);

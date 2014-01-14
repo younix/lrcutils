@@ -50,7 +50,7 @@ main(int argc, char **argv)
 	int min, sec, csec;
 	struct timeval start_time;
 	struct timeval cur_time;
-	struct lrc_info lrc_info = {0};
+	struct lrc_info lrc_info = LRC_INFO_NULL;
 	int ch, key;
 	struct termios tty;
 

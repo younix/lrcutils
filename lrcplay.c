@@ -49,7 +49,7 @@ main(int argc, char **argv)
 	char *lyric;
 	char *ttag;			/* timing tag	*/
 	char *tag, *tag_value;
-	struct lrc_info lrc_info = {0};
+	struct lrc_info lrc_info = LRC_INFO_NULL;
 	useconds_t wtime = 0;		/* waiting time	*/
 	useconds_t time_sum = 0;
 
