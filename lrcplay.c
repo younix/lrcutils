@@ -14,11 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <ctype.h>
+#include <unistd.h>
 
 #include "lrc.h"
 
@@ -55,7 +55,7 @@ main(int argc, char **argv)
 
 	if (argc < 2)
 		usage();
-	
+
 	FILE *fh = fopen(argv[1], "r");
 
 	if (fh == NULL)
